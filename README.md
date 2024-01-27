@@ -8,7 +8,11 @@ This small utility will detect the maximum RX/TX ring buffer values and set them
 
 In order to make the ring buffer change permanently, please use some facilities that can ensure the command run after OS started.
 
-## Dependencies
+I developed this utility in both C and Python versions.
+
+## Python Version
+
+### Dependencies
 
 Following Python packages are needed:
 
@@ -20,7 +24,7 @@ subprocess
 sys
 ```
 
-## Usage
+### Usage
 
 This utility needs ethtool utility to read and set ring buffer values. So it needs superuser permission to run.
 
@@ -35,7 +39,7 @@ options:
   --device DEVICE  Ethernet device name
 ```
 
-## Example
+### Example
 
 ```
 $ sudo ./set-ethernet-max-ring-buffer.py --device eno1
@@ -53,6 +57,45 @@ RX:		4096
 RX Mini:	n/a
 RX Jumbo:	n/a
 TX:		4096
+```
+
+## C Version
+
+### Dependencies
+
+This C version does not need any extra command dependencies. It utilized related `ETHTOOL_*` ioctl commands to complete the ring buffer configuration.
+
+### Compilation
+
+```
+$ gcc -g -Wall -Wextra -Wpedantic -o set-ethernet-max-ring-buffer set-ethernet-max-ring-buffer.c
+```
+
+### Usage
+
+```
+$ ./set-ethernet-max-ring-buffer
+usage: ./set-ethernet-max-ring-buffer -d <ethernet device name>
+```
+
+### Example
+
+```
+$ sudo ./set-ethernet-max-ring-buffer -d eno1
+Setting RX Ring Buffer from 256 to 4096
+Setting TX Ring Buffer from 256 to 4096
+$ sudo ethtool -g eno1
+Ring parameters for eno1:
+Pre-set maximums:
+RX:             4096
+RX Mini:        n/a
+RX Jumbo:       n/a
+TX:             4096
+Current hardware settings:
+RX:             4096
+RX Mini:        n/a
+RX Jumbo:       n/a
+TX:             4096
 ```
 
 ## Reference
