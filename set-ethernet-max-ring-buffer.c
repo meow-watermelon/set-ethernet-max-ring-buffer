@@ -1,3 +1,4 @@
+#include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -19,7 +20,7 @@ struct cmd_context {
     struct ifreq ifr;   /* ifreq suitable for ethtool ioctl */
 };
 
-int send_ioctl(struct cmd_context *ctx, void *cmd)
+static int send_ioctl(struct cmd_context *ctx, void *cmd)
 {
     ctx->ifr.ifr_data = cmd;
     return ioctl(ctx->fd, SIOCETHTOOL, &ctx->ifr);
@@ -34,7 +35,7 @@ static int set_max_ring(struct cmd_context *ctx)
     err = send_ioctl(ctx, &ering);
     if (err != 0) {
         perror("Cannot get device ring settings");
-        return 76;
+        return 3;
     }
 
     /* set up maximum ring buffer values on rx/tx */
@@ -52,7 +53,7 @@ static int set_max_ring(struct cmd_context *ctx)
     err = send_ioctl(ctx, &ering);
     if (err != 0) {
         perror("Cannot set device ring parameters");
-        return 81;
+        return 4;
     }
 
     return 0;
@@ -63,7 +64,7 @@ static int ioctl_init(struct cmd_context *ctx)
     if (strlen(ctx->devname) >= IFNAMSIZ) {
         fprintf(stderr, "Device name longer than %u characters\n",
             IFNAMSIZ - 1);
-        exit(EXIT_FAILURE);
+        return 5;
     }
 
     /* Setup our control structures. */
@@ -76,7 +77,7 @@ static int ioctl_init(struct cmd_context *ctx)
         ctx->fd = socket(AF_NETLINK, SOCK_RAW, NETLINK_GENERIC);
     if (ctx->fd < 0) {
         perror("Cannot get control socket");
-        return 70;
+        return 6;
     }
 
     return 0;

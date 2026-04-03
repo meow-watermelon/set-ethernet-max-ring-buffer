@@ -1,0 +1,11 @@
+[Unit]
+Description=Enable maximum Ethernet ring buffer
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/set-ethernet-max-ring-buffer -d eno1
+
+[Install]
+WantedBy=multi-user.target
